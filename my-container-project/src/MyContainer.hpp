@@ -169,21 +169,24 @@ public:
         std::vector<T> midout_elements;
     public:
         MiddleOutOrder(const MyContainer& container) {
-            const std::vector<T>& src = container.elements;
-            size_t n = src.size();
+            std::vector<T> temp = container.elements;
+            std::sort(temp.begin(), temp.end()); // Ensure elements are sorted
+
+            size_t n = temp.size();
             if (n == 0) return;
-            int mid = n / 2; // עיגול מטה
-            midout_elements.push_back(src[mid]);
+            size_t mid = n / 2; // Middle index rounded down
+            midout_elements.push_back(temp[mid]);
             int left = mid - 1;
             int right = mid + 1;
-            bool side = true; // true=left, false=right
-            while (midout_elements.size() < n) {
-                if (side && left >= 0) {
-                    midout_elements.push_back(src[left--]);
-                } else if (!side && right < static_cast<int>(n)) {
-                    midout_elements.push_back(src[right++]);
+            while (left >= 0 || right < static_cast<int>(n)) {
+                if (left >= 0) {
+                    midout_elements.push_back(temp[left]);
+                    --left;
                 }
-                side = !side;
+                if (right < static_cast<int>(n)) {
+                    midout_elements.push_back(temp[right]);
+                    ++right;
+                }
             }
         }
         class Iterator {
