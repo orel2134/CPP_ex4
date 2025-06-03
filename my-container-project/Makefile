@@ -14,6 +14,9 @@
 # Notes:
 # - All .cpp/.hpp files are in src/.
 # - You can add more source files to src/ as needed.
+#
+# To run tests, navigate to the project directory and execute:
+# cd my-container-project && make test
 # =====================================================================
 
 CXX = g++
