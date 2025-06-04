@@ -2,7 +2,7 @@
 #include "doctest (1).h"
 #include "MyContainer.hpp"
 #include <string>
-using namespace ariel;
+using namespace my_container_project;
 
 TEST_CASE("Add, Remove, Size, Output - int") {
     MyContainer<int> c;
@@ -247,18 +247,23 @@ TEST_CASE("MiddleOutOrder Iterator - int with repeated elements") {
     }
 }
 
-TEST_CASE("MiddleOutOrder Iterator - large container") {
+// MiddleOutOrder Iterator Tests
+
+//////////////////////////////////////////////////
+
+TEST_CASE("MiddleOutOrder Iterator - 9 elements") {
     MyContainer<int> container;
-    for (int i = 1; i <= 100; ++i) {
-        container.addElement(i);
-    }
-    std::vector<int> expectedOrder;
-    size_t mid = 100 / 2;
-    expectedOrder.push_back(mid + 1);
-    for (int left = mid, right = mid + 2; left >= 1 || right <= 100; --left, ++right) {
-        if (left >= 1) expectedOrder.push_back(left);
-        if (right <= 100) expectedOrder.push_back(right);
-    }
+    container.addElement(10);
+    container.addElement(20);
+    container.addElement(30);
+    container.addElement(40);
+    container.addElement(50);
+    container.addElement(60);
+    container.addElement(70);
+    container.addElement(80);
+    container.addElement(90);
+
+    std::vector<int> expectedOrder = {50, 40, 60, 30, 70, 20, 80, 10, 90};
 
     size_t index = 0;
     auto middleOutIterator = MyContainer<int>::MiddleOutOrder(container);
@@ -266,3 +271,157 @@ TEST_CASE("MiddleOutOrder Iterator - large container") {
         CHECK(*it == expectedOrder[index]);
     }
 }
+
+TEST_CASE("MiddleOutOrder Iterator - 5 elements") {
+    MyContainer<int> container;
+    container.addElement(1);
+    container.addElement(2);
+    container.addElement(3);
+    container.addElement(4);
+    container.addElement(5);
+
+    std::vector<int> expectedOrder = {3, 2, 4, 1, 5};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<int>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+TEST_CASE("MiddleOutOrder Iterator - 7 elements") {
+    MyContainer<int> container;
+    container.addElement(10);
+    container.addElement(20);
+    container.addElement(30);
+    container.addElement(40);
+    container.addElement(50);
+    container.addElement(60);
+    container.addElement(70);
+
+    std::vector<int> expectedOrder = {40, 30, 50, 20, 60, 10, 70};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<int>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+TEST_CASE("MiddleOutOrder Iterator - 11 elements") {
+    MyContainer<int> container;
+    container.addElement(10);
+    container.addElement(20);
+    container.addElement(30);
+    container.addElement(40);
+    container.addElement(50);
+    container.addElement(60);
+    container.addElement(70);
+    container.addElement(80);
+    container.addElement(90);
+    container.addElement(100);
+    container.addElement(110);
+
+    std::vector<int> expectedOrder = {60, 50, 70, 40, 80, 30, 90, 20, 100, 10, 110};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<int>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+
+
+TEST_CASE("MiddleOutOrder Iterator - 6 elements") {
+    MyContainer<int> container;
+    container.addElement(10);
+    container.addElement(20);
+    container.addElement(30);
+    container.addElement(40);
+    container.addElement(50);
+    container.addElement(60);
+
+    std::vector<int> expectedOrder = {30, 20, 40, 10, 50, 60};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<int>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+
+
+
+TEST_CASE("MiddleOutOrder Iterator - 8 elements") {
+    MyContainer<int> container;
+    container.addElement(10);
+    container.addElement(20);
+    container.addElement(30);
+    container.addElement(40);
+    container.addElement(50);
+    container.addElement(60);
+    container.addElement(70);
+    container.addElement(80);
+
+    std::vector<int> expectedOrder = {40, 30, 50, 20, 60, 10, 70, 80};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<int>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+TEST_CASE("MiddleOutOrder Iterator - 4 elements") {
+    MyContainer<int> container;
+    container.addElement(10);
+    container.addElement(20);
+    container.addElement(30);
+    container.addElement(40);
+
+    std::vector<int> expectedOrder = {20, 10, 30, 40};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<int>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+TEST_CASE("MiddleOutOrder Iterator - 10 elements") {
+    MyContainer<int> container;
+    container.addElement(10);
+    container.addElement(20);
+    container.addElement(30);
+    container.addElement(40);
+    container.addElement(50);
+    container.addElement(60);
+    container.addElement(70);
+    container.addElement(80);
+    container.addElement(90);
+    container.addElement(100);
+
+    std::vector<int> expectedOrder = {50, 40, 60, 30, 70, 20, 80, 10, 90, 100};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<int>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+TEST_CASE("MiddleOutOrder Iterator - 2 elements") {
+    MyContainer<int> container;
+    container.addElement(10);
+    container.addElement(20);
+
+    std::vector<int> expectedOrder = {10, 20};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<int>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace ariel {
+namespace my_container_project {
 
 template<typename T = int>
 class MyContainer {
@@ -167,17 +167,20 @@ public:
     class MiddleOutOrder {
     private:
         std::vector<T> midout_elements;
+
     public:
         MiddleOutOrder(const MyContainer& container) {
-            std::vector<T> temp = container.elements;
-            std::sort(temp.begin(), temp.end()); // Ensure elements are sorted
-
+            const std::vector<T>& temp = container.getElements();
             size_t n = temp.size();
             if (n == 0) return;
-            size_t mid = n / 2; // Middle index rounded down
+
+            // נבחר את האינדקס האמצעי: אם זוגי – נעגל למטה
+            size_t mid = (n % 2 == 0) ? (n / 2 - 1) : (n / 2);
             midout_elements.push_back(temp[mid]);
-            int left = mid - 1;
-            int right = mid + 1;
+
+            int left = static_cast<int>(mid) - 1;
+            int right = static_cast<int>(mid) + 1;
+
             while (left >= 0 || right < static_cast<int>(n)) {
                 if (left >= 0) {
                     midout_elements.push_back(temp[left]);
@@ -189,20 +192,10 @@ public:
                 }
             }
         }
-        class Iterator {
-        private:
-            const std::vector<T>& ref;
-            size_t idx;
-        public:
-            Iterator(const std::vector<T>& v, size_t i) : ref(v), idx(i) {}
-            const T& operator*() const { return ref.at(idx); }
-            Iterator& operator++() { ++idx; return *this; }
-            bool operator!=(const Iterator& other) const { return idx != other.idx || &ref != &other.ref; }
-            bool operator==(const Iterator& other) const { return !(*this != other); }
-        };
-        Iterator begin() const { return Iterator(midout_elements, 0); }
-        Iterator end()   const { return Iterator(midout_elements, midout_elements.size()); }
+
+        auto begin() const { return midout_elements.begin(); }
+        auto end() const { return midout_elements.end(); }
     };
 };
 
-} // namespace ariel
+} // namespace my_container_project
