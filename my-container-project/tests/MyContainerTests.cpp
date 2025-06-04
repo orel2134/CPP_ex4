@@ -425,3 +425,95 @@ TEST_CASE("MiddleOutOrder Iterator - 2 elements") {
     }
 }
 
+TEST_CASE("MiddleOutOrder Iterator - 12 elements") {
+    MyContainer<int> container;
+    container.addElement(10);
+    container.addElement(20);
+    container.addElement(30);
+    container.addElement(40);
+    container.addElement(50);
+    container.addElement(60);
+    container.addElement(70);
+    container.addElement(80);
+    container.addElement(90);
+    container.addElement(100);
+    container.addElement(110);
+    container.addElement(120);
+
+    std::vector<int> expectedOrder = {60, 50, 70, 40, 80, 30, 90, 20, 100, 10, 110, 120};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<int>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+TEST_CASE("MiddleOutOrder Iterator - 3 elements") {
+    MyContainer<int> container;
+    container.addElement(10);
+    container.addElement(20);
+    container.addElement(30);
+
+    std::vector<int> expectedOrder = {20, 10, 30};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<int>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+TEST_CASE("MiddleOutOrder Iterator - 1 element") {
+    MyContainer<int> container;
+    container.addElement(10);
+
+    std::vector<int> expectedOrder = {10};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<int>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+// Added 5 new test cases for various functions
+TEST_CASE("Add and Size - multiple elements") {
+    MyContainer<int> container;
+    container.addElement(10);
+    container.addElement(20);
+    container.addElement(30);
+    container.addElement(40);
+    CHECK(container.size() == 4);
+}
+
+TEST_CASE("Remove - element not found") {
+    MyContainer<int> container;
+    container.addElement(10);
+    container.addElement(20);
+    CHECK_THROWS_AS(container.remove(30), std::runtime_error);
+}
+
+TEST_CASE("Output - multiple elements") {
+    MyContainer<int> container;
+    container.addElement(10);
+    container.addElement(20);
+    container.addElement(30);
+    std::ostringstream oss;
+    oss << container;
+    CHECK(oss.str() == "10 20 30 ");
+}
+
+TEST_CASE("AscendingOrder - empty container") {
+    MyContainer<int> container;
+    auto it = MyContainer<int>::AscendingOrder(container);
+    CHECK(it.begin() == it.end());
+}
+
+TEST_CASE("DescendingOrder - single element") {
+    MyContainer<int> container;
+    container.addElement(42);
+    auto it = MyContainer<int>::DescendingOrder(container);
+    CHECK(*it.begin() == 42);
+    CHECK(++it.begin() == it.end());
+}
+
