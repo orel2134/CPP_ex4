@@ -517,3 +517,120 @@ TEST_CASE("DescendingOrder - single element") {
     CHECK(++it.begin() == it.end());
 }
 
+TEST_CASE("AscendingOrder Iterator") {
+    MyContainer<int> c;
+    c.addElement(3);
+    c.addElement(1);
+    c.addElement(2);
+
+    MyContainer<int>::AscendingOrder asc(c);
+    auto it = asc.begin();
+
+    CHECK(*it == 1);
+    ++it;
+    CHECK(*it == 2);
+    ++it;
+    CHECK(*it == 3);
+    ++it;
+    CHECK(it == asc.end());
+}
+
+TEST_CASE("DescendingOrder Iterator") {
+    MyContainer<int> c;
+    c.addElement(3);
+    c.addElement(1);
+    c.addElement(2);
+
+    MyContainer<int>::DescendingOrder desc(c);
+    auto it = desc.begin();
+
+    CHECK(*it == 3);
+    ++it;
+    CHECK(*it == 2);
+    ++it;
+    CHECK(*it == 1);
+    ++it;
+    CHECK(it == desc.end());
+}
+
+TEST_CASE("SideCrossOrder Iterator") {
+    MyContainer<int> c;
+    c.addElement(1);
+    c.addElement(2);
+    c.addElement(3);
+    c.addElement(4);
+
+    MyContainer<int>::SideCrossOrder sideCross(c);
+    auto it = sideCross.begin();
+
+    CHECK(*it == 1);
+    ++it;
+    CHECK(*it == 4);
+    ++it;
+    CHECK(*it == 2);
+    ++it;
+    CHECK(*it == 3);
+    ++it;
+    CHECK(it == sideCross.end());
+}
+
+TEST_CASE("ReverseOrder Iterator") {
+    MyContainer<int> c;
+    c.addElement(1);
+    c.addElement(2);
+    c.addElement(3);
+
+    MyContainer<int>::ReverseOrder reverse(c);
+    auto it = reverse.begin();
+
+    CHECK(*it == 3);
+    ++it;
+    CHECK(*it == 2);
+    ++it;
+    CHECK(*it == 1);
+    ++it;
+    CHECK(it == reverse.end());
+}
+
+TEST_CASE("Order Iterator") {
+    MyContainer<int> c;
+    c.addElement(1);
+    c.addElement(2);
+    c.addElement(3);
+
+    MyContainer<int>::Order order(c);
+    auto it = order.begin();
+
+    CHECK(*it == 1);
+    ++it;
+    CHECK(*it == 2);
+    ++it;
+    CHECK(*it == 3);
+    ++it;
+    CHECK(it == order.end());
+}
+
+TEST_CASE("MiddleOutOrder Iterator") {
+    MyContainer<int> c;
+    c.addElement(1);
+    c.addElement(2);
+    c.addElement(3);
+    c.addElement(4);
+    c.addElement(5);
+
+    MyContainer<int>::MiddleOutOrder middleOut(c);
+    auto it = middleOut.begin();
+
+    CHECK(*it == 3);
+    ++it;
+    CHECK(*it == 2);
+    ++it;
+    CHECK(*it == 4);
+    ++it;
+    CHECK(*it == 1);
+    ++it;
+    CHECK(*it == 5);
+    ++it;
+    CHECK(it == middleOut.end());
+}
+
