@@ -32,13 +32,17 @@ TEST_SRC = $(TEST_DIR)/MyContainerTests.cpp
 TEST_OBJ = $(BUILD_DIR)/MyContainerTests.o
 TEST_BIN = MyContainerTests
 
-all: test
+MAIN_SRC = $(SRC_DIR)/main.cpp
+MAIN_OBJ = $(BUILD_DIR)/main.o
+MAIN_BIN = Main
+
+all: main test
 
 $(BUILD_DIR):
 	@if [ ! -d $(BUILD_DIR) ]; then mkdir -p $(BUILD_DIR); fi
 
-test: $(BUILD_DIR) $(TEST_OBJ) $(SRC_OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TEST_BIN) $(TEST_OBJ) $(SRC_OBJS)
+test: force $(BUILD_DIR) $(TEST_OBJ) $(filter-out $(MAIN_OBJ), $(SRC_OBJS))
+	$(CXX) $(CXXFLAGS) -o $(TEST_BIN) $(TEST_OBJ) $(filter-out $(MAIN_OBJ), $(SRC_OBJS))
 	./$(TEST_BIN)
 
 $(TEST_OBJ): $(TEST_SRC) | $(BUILD_DIR)
@@ -50,7 +54,14 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
 valgrind: test
 	valgrind --leak-check=full ./$(TEST_BIN)
 
-clean:
-	rm -rf $(BUILD_DIR) $(TEST_BIN)
+main: force $(BUILD_DIR) $(MAIN_OBJ) $(filter-out $(MAIN_OBJ), $(SRC_OBJS))
+	$(CXX) $(CXXFLAGS) -o $(MAIN_BIN) $(MAIN_OBJ) $(filter-out $(MAIN_OBJ), $(SRC_OBJS))
+	./$(MAIN_BIN)
 
-.PHONY: all test valgrind clean
+$(MAIN_OBJ): $(MAIN_SRC) | $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -rf $(BUILD_DIR) $(TEST_BIN) $(MAIN_BIN)
+
+.PHONY: all test valgrind clean main force
