@@ -760,4 +760,3 @@ TEST_CASE("MiddleOutOrder Iterator - mixed string container") {
         CHECK(*it == expectedOrder[index]);
     }
 }
-

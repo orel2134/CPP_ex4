@@ -22,8 +22,12 @@ public:
     /**
      * @brief Adds an element to the container.
      * @param element The element to add.
+     * @throws ActiveIterationError If there is an active iteration.
      */
     void addElement(const T& element) {
+        if (isIterating) {
+            throw ActiveIterationError("Cannot add element during active iteration");
+        }
         elements.push_back(element);
     }
 
@@ -70,14 +74,14 @@ public:
      */
     class AscendingOrder {
     private:
+        MyContainer& container; // Non-const reference to the container
         std::vector<T> sorted_elements;
     public:
         /**
          * @brief Constructs AscendingOrder iterator from container.
          * @param container Source container.
          */
-        AscendingOrder(const MyContainer& container)
-            : sorted_elements(container.elements) {
+        AscendingOrder(MyContainer& container) : container(container), sorted_elements(container.elements) {
             std::sort(sorted_elements.begin(), sorted_elements.end());
         }
 
@@ -113,8 +117,14 @@ public:
             bool operator==(const Iterator& other) const { return !(*this != other); }
         };
 
-        Iterator begin() const { return Iterator(sorted_elements, 0); }
-        Iterator end() const { return Iterator(sorted_elements, sorted_elements.size()); }
+        Iterator begin() {
+            container.isIterating = true;
+            return Iterator(sorted_elements, 0);
+        }
+        Iterator end() {
+            container.isIterating = false;
+            return Iterator(sorted_elements, sorted_elements.size());
+        }
     };
 
     /**
@@ -122,14 +132,14 @@ public:
      */
     class DescendingOrder {
     private:
+        MyContainer& container; // Non-const reference to the container
         std::vector<T> sorted_elements;
     public:
         /**
          * @brief Constructs DescendingOrder iterator from container.
          * @param container Source container.
          */
-        DescendingOrder(const MyContainer& container)
-            : sorted_elements(container.elements) {
+        DescendingOrder(MyContainer& container) : container(container), sorted_elements(container.elements) {
             std::sort(sorted_elements.begin(), sorted_elements.end(), std::greater<T>());
         }
 
@@ -161,8 +171,14 @@ public:
             bool operator==(const Iterator& other) const { return !(*this != other); }
         };
 
-        Iterator begin() const { return Iterator(sorted_elements, 0); }
-        Iterator end() const { return Iterator(sorted_elements, sorted_elements.size()); }
+        Iterator begin() {
+            container.isIterating = true;
+            return Iterator(sorted_elements, 0);
+        }
+        Iterator end() {
+            container.isIterating = false;
+            return Iterator(sorted_elements, sorted_elements.size());
+        }
     };
 
     /**
@@ -170,13 +186,14 @@ public:
      */
     class SideCrossOrder {
     private:
+        MyContainer& container; // Non-const reference to the container
         std::vector<T> cross_ordered;
     public:
         /**
          * @brief Constructs SideCrossOrder iterator from container.
          * @param container Source container.
          */
-        SideCrossOrder(const MyContainer& container) {
+        SideCrossOrder(MyContainer& container) : container(container) {
             std::vector<T> temp = container.elements;
             std::sort(temp.begin(), temp.end());
             size_t left = 0, right = temp.size() ? temp.size() - 1 : 0;
@@ -220,8 +237,14 @@ public:
             bool operator==(const Iterator& other) const { return !(*this != other); }
         };
 
-        Iterator begin() const { return Iterator(cross_ordered, 0); }
-        Iterator end() const { return Iterator(cross_ordered, cross_ordered.size()); }
+        Iterator begin() {
+            container.isIterating = true;
+            return Iterator(cross_ordered, 0);
+        }
+        Iterator end() {
+            container.isIterating = false;
+            return Iterator(cross_ordered, cross_ordered.size());
+        }
     };
 
     /**
@@ -334,6 +357,16 @@ public:
         auto begin() const { return midout_elements.begin(); }
         auto end() const { return midout_elements.end(); }
     };
+
+    /**
+     * @brief Exception class for active iteration errors.
+     */
+    class ActiveIterationError : public std::runtime_error {
+    public:
+        explicit ActiveIterationError(const std::string& msg) : std::runtime_error(msg) {}
+    };
+
+    bool isIterating = false; // Track active iteration state
 };
 
 } // namespace my_container_project
