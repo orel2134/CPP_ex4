@@ -19,18 +19,34 @@ TEST_CASE("Add, Remove, Size, Output - int") {
     CHECK(oss.str() == "10 ");
 }
 
-TEST_CASE("Add, Remove, Size, Output - string") {
-    MyContainer<std::string> c;
-    c.addElement("a");
-    c.addElement("b");
-    c.addElement("a");
-    CHECK(c.size() == 3);
-    c.remove("a");
-    CHECK(c.size() == 1);
-    CHECK_THROWS_AS(c.remove("a"), std::runtime_error);
+TEST_CASE("Add, Remove, Size, Output - char") {
+    MyContainer<char> container;
+    CHECK(container.size() == 0);
+    container.addElement('x');
+    container.addElement('y');
+    container.addElement('z');
+    CHECK(container.size() == 3);
+    container.remove('y');
+    CHECK(container.size() == 2);
+    CHECK_THROWS_AS(container.remove('y'), std::runtime_error);
     std::ostringstream oss;
-    oss << c;
-    CHECK(oss.str() == "b ");
+    oss << container;
+    CHECK(oss.str() == "x z ");
+}
+
+TEST_CASE("Add, Remove, Size, Output - string") {
+    MyContainer<std::string> container;
+    CHECK(container.size() == 0);
+    container.addElement("hello");
+    container.addElement("world");
+    container.addElement("hello");
+    CHECK(container.size() == 3);
+    container.remove("hello");
+    CHECK(container.size() == 1);
+    CHECK_THROWS_AS(container.remove("hello"), std::runtime_error);
+    std::ostringstream oss;
+    oss << container;
+    CHECK(oss.str() == "world ");
 }
 
 TEST_CASE("Add, Remove, Size, Output - double") {
@@ -632,5 +648,116 @@ TEST_CASE("MiddleOutOrder Iterator") {
     CHECK(*it == 5);
     ++it;
     CHECK(it == middleOut.end());
+}
+
+TEST_CASE("MiddleOutOrder Iterator - string") {
+    MyContainer<std::string> container;
+    container.addElement("apple");
+    container.addElement("banana");
+    container.addElement("cherry");
+    container.addElement("date");
+    container.addElement("elderberry");
+
+    std::vector<std::string> expectedOrder = {"cherry", "banana", "date", "apple", "elderberry"};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<std::string>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+TEST_CASE("MiddleOutOrder Iterator - double") {
+    MyContainer<double> container;
+    container.addElement(1.1);
+    container.addElement(2.2);
+    container.addElement(3.3);
+    container.addElement(4.4);
+    container.addElement(5.5);
+
+    std::vector<double> expectedOrder = {3.3, 2.2, 4.4, 1.1, 5.5};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<double>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+TEST_CASE("MiddleOutOrder Iterator - char") {
+    MyContainer<char> container;
+    container.addElement('a');
+    container.addElement('b');
+    container.addElement('c');
+    container.addElement('d');
+    container.addElement('e');
+
+    std::vector<char> expectedOrder = {'c', 'b', 'd', 'a', 'e'};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<char>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+TEST_CASE("MiddleOutOrder Iterator - empty string container") {
+    MyContainer<std::string> container;
+    std::vector<std::string> expectedOrder = {};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<std::string>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+TEST_CASE("MiddleOutOrder Iterator - single double element") {
+    MyContainer<double> container;
+    container.addElement(42.42);
+    std::vector<double> expectedOrder = {42.42};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<double>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+TEST_CASE("MiddleOutOrder Iterator - repeated char elements") {
+    MyContainer<char> container;
+    container.addElement('x');
+    container.addElement('x');
+    container.addElement('x');
+    container.addElement('x');
+    container.addElement('x');
+    std::vector<char> expectedOrder = {'x', 'x', 'x', 'x', 'x'};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<char>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
+}
+
+
+
+TEST_CASE("MiddleOutOrder Iterator - mixed string container") {
+    MyContainer<std::string> container;
+    container.addElement("apple");
+    container.addElement("banana");
+    container.addElement("cherry");
+    container.addElement("date");
+    container.addElement("elderberry");
+    container.addElement("fig");
+    container.addElement("grape");
+
+    std::vector<std::string> expectedOrder = {"date", "cherry", "elderberry", "banana", "fig", "apple", "grape"};
+
+    size_t index = 0;
+    auto middleOutIterator = MyContainer<std::string>::MiddleOutOrder(container);
+    for (auto it = middleOutIterator.begin(); it != middleOutIterator.end(); ++it, ++index) {
+        CHECK(*it == expectedOrder[index]);
+    }
 }
 

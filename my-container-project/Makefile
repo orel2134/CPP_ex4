@@ -64,4 +64,7 @@ $(MAIN_OBJ): $(MAIN_SRC) | $(BUILD_DIR)
 clean:
 	rm -rf $(BUILD_DIR) $(TEST_BIN) $(MAIN_BIN)
 
-.PHONY: all test valgrind clean main force
+run_all: main test
+	@echo "Running both main and test targets..."
+
+.PHONY: all test valgrind clean main force run_all
